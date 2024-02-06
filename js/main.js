@@ -164,6 +164,29 @@ Vue.component('testing-tasks', {
   `,
     props: ['notes', 'moveToCompleted', 'moveToInProgress', 'deleteNote', 'editNote'],
 });
+Vue.component('completed-tasks', {
+    template: `
+    <div class="column">
+      <h4 class="column-title">Завершенные задачи</h4>
+    <ul class="list">
+        <li class="cart list-item" v-for="(note, index) in notes" v-if="note.isDone === true">
+            <p>Название : {{ note.text }}</p>
+            <p>Описание : {{ note.description }}</p>
+            <p>Дата создания : {{ note.created_at }}</p>
+            <p v-if="note.lastEditedAt">Изменено : {{ note.lastEditedAt }}</p>
+            <p>Крайний срок : {{ note.deadline }}</p>
+            <p class="deadline" v-if="note.isOverdue">Статус: Просрочено</p>
+            <button class="arrow-button" @click="(note.isTested = true) && (note.isDone = false)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="delete-button" @click="deleteNote(note.text)">Удалить</button>
+
+        </li>
+    </ul>
+    </div>
+  `,
+    props: ['notes', 'moveToCompleted', 'moveToInProgress', 'deleteNote', 'editNote'],
+});
 new Vue({
     el: '#app'
 });
