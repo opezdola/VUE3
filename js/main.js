@@ -116,6 +116,29 @@ Vue.component('planned-tasks', {
     props: ['notes', 'moveToCompleted', 'moveToInProgress', 'deleteNote', 'editNote'],
 
 });
+Vue.component('in-progress-tasks', {
+    template: `
+    <div class="column">
+      <h4 class="column-title">Задачи в работе</h4>
+    <ul class="list">
+        <li class="cart list-item" v-for="(note, index) in notes" v-if="note.isProcess === true">
+            <p>Название : {{ note.text }}</p>
+            <p>Описание : {{ note.description }}</p>
+            <p>Дата создания : {{ note.created_at }}</p>
+            <p v-if="note.lastEditedAt">Изменено : {{ note.lastEditedAt }}</p>
+            <p>Крайний срок : {{ note.deadline }}</p>
+            <p v-if="note.returnReason">Причина отката : {{ note.returnReason }}</p>
+            <button class="arrow-button" @click="(note.isTested = true) && (note.isProcess = false)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="delete-button" @click="deleteNote(note.text)">Удалить</button>
+
+        </li>
+    </ul>
+    </div>
+  `,
+    props: ['notes', 'moveToCompleted', 'moveToInProgress', 'deleteNote', 'editNote'],
+});
 new Vue({
     el: '#app'
 });
