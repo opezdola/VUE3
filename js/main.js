@@ -1,4 +1,3 @@
-
 Vue.component('kanban-desktop', {
     template: `
     <div>
@@ -29,7 +28,63 @@ Vue.component('kanban-desktop', {
             notes: []
         };
     },
+    methods: {
+        moveToCompleted(index) {
+            const currentDate = new Date();
+            const deadlineDate = new Date(this.notes[index].deadline);
 
+            this.notes[index].isOverdue = currentDate > deadlineDate;
+
+            this.notes[index].isTested = false;
+            this.notes[index].isDone = true;
+        },
+        moveToInProgress(index) {
+            const reason = prompt("Введите причину возврата задачи:");
+            if (reason !== null) {
+                this.notes[index].returnReason = reason;
+                this.notes[index].isProcess = true;
+                this.notes[index].isTested = false;
+            }
+        },
+        addNote() {
+            this.notes.push({
+                text: this.currentNote,
+                description: this.currentDescription,
+                created_at: new Date(),
+                lastEditedAt: null,
+                deadline: this.currentDeadline,
+                isPlanned: true,
+                isProcess: false,
+                isTested: false,
+                isDone: false,
+                isEdit: false
+            });
+            this.currentNote = "";
+            this.currentDescription = "";
+            this.currentDeadline = "";
+        },
+        editNote(index) {
+            this.notes[index].lastEditedAt = new Date();
+            this.notes[index].isEdit = false;
+        },
+        deleteNote(noteText) {
+            this.notes = this.notes.filter(note => note.text !== noteText);
+        }
+    },
+    created() {
+        const savedNotes = localStorage.getItem('kanbanNotes');
+        if (savedNotes) {
+            this.notes = JSON.parse(savedNotes);
+        }
+    },
+    watch: {
+        notes: {
+            handler: function() {
+                localStorage.setItem('kanbanNotes', JSON.stringify(this.notes));
+            },
+            deep: true
+        }
+    }
 });
 new Vue({
     el: '#app'
