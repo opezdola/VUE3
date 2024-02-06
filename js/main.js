@@ -86,6 +86,36 @@ Vue.component('kanban-desktop', {
         }
     }
 });
+Vue.component('planned-tasks', {
+    template: `
+    <div class="column">
+      <h4 class="column-title">Запланированные задачи</h4>
+    <ul class="list">
+        <li class="cart list-item" v-for="(note, index) in notes" v-if="note.isPlanned === true">
+            <p>Название : {{ note.text }}</p>
+            <p>Описание : {{ note.description }}</p>
+            <p>Дата создания : {{ note.created_at }}</p>
+            <p v-if="note.lastEditedAt">Изменено : {{ note.lastEditedAt }}</p>
+            <p>Крайний срок : {{ note.deadline }}</p>
+            <button @click="(note.isEdit = !note.isEdit)">Редактировать</button>
+            <button class="arrow-button" @click="(note.isProcess = true) && (note.isPlanned = false)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="delete-button" @click="deleteNote(note.text)">Удалить</button>
+
+            <div v-if="note.isEdit">
+                <input v-model="note.text">
+                <textarea v-model="note.description"></textarea>
+                <input type="date" v-model="note.deadline">
+                <button @click="editNote(index)">Сохранить</button>
+            </div>
+        </li>
+    </ul>
+    </div>
+  `,
+    props: ['notes', 'moveToCompleted', 'moveToInProgress', 'deleteNote', 'editNote'],
+
+});
 new Vue({
     el: '#app'
 });
